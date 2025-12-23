@@ -1,0 +1,127 @@
+{
+  "token": "MTQ1MzE1NDgzNDkzNTk3MTk5Mg.GuBwg8.A5MDN0YqZHJ-t7x4NDOceaOLXi6_ACNt2b5nfc",
+  "prefix": "vs!",
+  "owners": ["1123622103917285418", "810890907989049384", "964986129491316847"],
+
+  "logChannelId": "1453168181798502493",
+
+  "intents": {
+    "guilds": true,
+    "guildMembers": true,
+    "guildModeration": true,
+    "guildMessages": true,
+    "messageContent": true,
+    "guildWebhooks": true,
+    "guildEmojisAndStickers": true
+  },
+
+  "whitelist": {
+    "users": ["1123622103917285418", "810890907989049384", "964986129491316847"],
+    "roles": [],
+    "channels": []
+  },
+
+  "safety": {
+    "ignoreIfExecutorIsOwner": true,
+    "ignoreIfExecutorIsWhitelisted": true,
+    "ignoreIfExecutorIsBot": true,
+    "ignoreIfActionBySelf": true,
+
+    "auditFetchLimit": 6,
+    "auditMaxAgeMs": 9000,
+
+    "rateLimit": {
+      "enabled": true,
+      "windowMs": 15000,
+      "maxEventsPerExecutor": 6
+    }
+  },
+
+  "punishments": {
+    "default": {
+      "mode": "quarantine",
+      "timeoutMs": 3600000,
+      "banDeleteMessageSeconds": 0,
+      "reason": "Security: unauthorized action detected"
+    },
+    "modes": ["none", "timeout", "kick", "ban", "quarantine"]
+  },
+
+  "quarantine": {
+    "enabled": true,
+    "roleName": "Quarantine",
+    "roleId": "1453168615535935518",
+    "createIfMissing": true,
+    "removeAllRoles": true,
+    "setPermissions": {
+      "viewChannel": false,
+      "sendMessages": false,
+      "addReactions": false,
+      "connect": false,
+      "speak": false
+    }
+  },
+
+  "lockdown": {
+    "enabled": true,
+    "applyOnNuke": true,
+    "channels": {
+      "denySendMessages": true,
+      "denyConnect": true
+    }
+  },
+
+  "restore": {
+    "enabled": true,
+    "restoreChannels": true,
+    "restoreRoles": true,
+    "maxSnapshotsPerGuild": 50
+  },
+
+  "modules": {
+    "antiBan": { "enabled": true, "punishment": "default" },
+    "antiUnban": { "enabled": true, "punishment": "default" },
+
+    "antiChannelCreate": { "enabled": true, "punishment": "default", "restore": true },
+    "antiChannelDelete": { "enabled": true, "punishment": "default", "restore": true },
+    "antiChannelUpdate": { "enabled": true, "punishment": "default" },
+
+    "antiVanity": { "enabled": true, "punishment": "default" },
+
+    "antiWebhook": { "enabled": true, "punishment": "default", "deleteWebhook": true },
+
+    "antiRoleCreate": { "enabled": true, "punishment": "default", "restore": true },
+    "antiRoleDelete": { "enabled": true, "punishment": "default", "restore": true },
+    "antiRoleUpdate": { "enabled": true, "punishment": "default" },
+
+    "antiBot": { "enabled": true, "punishment": "kick", "action": "kickBot" },
+
+    "antiEveryone": {
+      "enabled": true,
+      "punishment": "default",
+      "deleteMessage": true,
+      "maxMentionsPerMessage": 1
+    },
+
+    "antiSticker": { "enabled": true, "punishment": "default" },
+
+    "antiGhostPing": {
+      "enabled": true,
+      "punishment": "default",
+      "windowMs": 15000,
+      "minMentions": 1
+    }
+  },
+  "panic": {
+    "enabled": true,
+    "windowMs": 10000,
+    "threshold": 4,
+
+    "actions": {
+      "quarantineExecutor": true,
+      "lockdown": true,
+      "disableModules": true
+    },
+    "logReason": "PANIC MODE: mass destructive actions detected"
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "bot": {
+    "ready": "✅ Security online come {userTag} (prefix: {prefix})",
+    "noPerms": "❌ Non hai i permessi per farlo.",
+    "ownerOnly": "❌ Solo gli owner possono usare questo comando.",
+    "reloaded": "✅ Config e messaggi ricaricati.",
+    "pong": "🏓 Pong! {ms}ms"
+  },
+
+  "log": {
+    "title": "Security Event",
+    "executor": "Executor",
+    "target": "Target",
+    "action": "Action",
+    "module": "Module",
+    "reason": "Reason",
+    "sanction": "Sanction",
+    "details": "Details"
+  },
+
+  "sanction": {
+    "none": "Nessuna sanzione applicata.",
+    "timeout": "Timeout applicato: {timeoutMs}ms",
+    "kick": "Kick applicato.",
+    "ban": "Ban applicato.",
+    "quarantine": "Quarantine applicata."
+  },
+
+  "commands": {
+    "help": {
+      "title": "Security Commands",
+      "lines": [
+        "{prefix}ping",
+        "{prefix}reload",
+        "{prefix}whitelist add user <id>",
+        "{prefix}whitelist add role <id>",
+        "{prefix}whitelist remove user <id>",
+        "{prefix}whitelist list",
+        "{prefix}quarantine on|off",
+        "{prefix}lockdown on|off"
+      ]
+    }
+  }
+}
