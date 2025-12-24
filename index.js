@@ -1,4 +1,4 @@
-const { Client, GatewayIntentBits, Partials, Collection } = require("discord.js");
+const { Client, GatewayIntentBits, Partials, Collection, ActivityType } = require("discord.js");
 const { loadConfig } = require("./src/core/config");
 const { loadMessages } = require("./src/core/messages");
 const { registerModules } = require("./src/core/permissions");
@@ -74,6 +74,41 @@ client.security = {
 registerModules(client);
 setupCommandHandler(client);
 
+async function updatePresence(client) {
+  const cfg = client.security.config;
+  const p = cfg.presence;
+  if (!p || !client.user) return;
+
+  const typeMap = {
+    PLAYING: ActivityType.Playing,
+    WATCHING: ActivityType.Watching,
+    LISTENING: ActivityType.Listening,
+    COMPETING: ActivityType.Competing
+  };
+
+  let membersCount = null;
+
+  if (p.memberCountGuild) {
+    const guild = client.guilds.cache.get(p.memberCountGuild);
+    if (guild) {
+      membersCount = guild.memberCount;
+    }
+  }
+
+  let text = p.activity?.text || "";
+  if (membersCount !== null) {
+    text = text.replace("{members}", membersCount.toLocaleString());
+  }
+
+  await client.user.setPresence({
+    status: p.status || "online",
+    activities: p.activity ? [{
+      name: text,
+      type: typeMap[p.activity.type] ?? ActivityType.Playing
+    }] : []
+  });
+}
+
 client.once("ready", async () => {
   const readyMsg = messages.bot.ready
     .replace("{userTag}", client.user.tag)
@@ -84,10 +119,7 @@ client.once("ready", async () => {
 
   await updatePresence(client);
 
-  const interval = config.presence?.updateInterval;
-  if (interval && interval > 0) {
-    setInterval(() => updatePresence(client), interval);
-  }
+  setTimeout(() => updatePresence(client), 5000);
 });
 
 client.login(config.token);
