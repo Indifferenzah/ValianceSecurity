@@ -1,6 +1,7 @@
 const { loadCommand } = require("./sanction");
 const path = require("path");
 const fs = require("fs");
+const { loadAliases, resolveAlias } = require("./aliases");
 
 function isOwner(client, userId) {
   const owners = client.security.config.owners || [];
@@ -16,6 +17,9 @@ function setupCommandHandler(client) {
     client.security.commands.set(cmd.name, cmd);
   }
 
+  // ✅ carica alias UNA VOLTA
+  const aliases = loadAliases();
+
   client.on("messageCreate", async (message) => {
     if (!message.guild) return;
     if (message.author.bot) return;
@@ -25,19 +29,28 @@ function setupCommandHandler(client) {
 
     if (!message.content.startsWith(prefix)) return;
 
-    const [rawName, ...args] = message.content.slice(prefix.length).trim().split(/\s+/);
-    const name = (rawName || "").toLowerCase();
+    const [rawName, ...args] = message.content
+      .slice(prefix.length)
+      .trim()
+      .split(/\s+/);
+
+    let name = (rawName || "").toLowerCase();
+
+    // ✅ risolvi alias
+    name = resolveAlias(name, aliases);
+
     const cmd = client.security.commands.get(name);
     if (!cmd) return;
 
     if (cmd.ownerOnly && !isOwner(client, message.author.id)) {
-      return message.reply({ content: client.security.messages.bot.ownerOnly }).catch(() => null);
+      return message.reply({
+        content: client.security.messages.bot.ownerOnly
+      }).catch(() => null);
     }
 
     try {
       await cmd.run({ client, message, args });
     } catch (e) {
-      // niente hard-coded: log solo console
       console.error(e);
     }
   });

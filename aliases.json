@@ -1,0 +1,7 @@
+{
+  "quarantine": ["q"],
+  "unquarantine": ["uq"],
+  "whitelist": ["wl"],
+  "lockdown": ["ld", "lk", "lkd"],
+  "setquarantine": ["sq"]
+}
