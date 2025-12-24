@@ -11,8 +11,6 @@ function registerAntiEveryone(client) {
     const hasEveryone = message.mentions.everyone;
     if (!hasEveryone) return;
 
-    // delete first? richiesta: sanziona prima e poi log.
-    // Qui l’evento è "message", il target è l’autore: sanzioniamo prima, poi cancelliamo, poi log.
     const executorMember = await message.guild.members.fetch(message.author.id).catch(() => null);
 
     await handleSecurityEvent({

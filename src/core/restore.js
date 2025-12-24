@@ -31,7 +31,6 @@ async function restoreLastDeletedChannel(guild) {
   const snap = (gs.snapshots?.channels || []).find(s => s.kind === "channel");
   if (!snap) return;
 
-  // create minimal channel
   const created = await guild.channels.create({
     name: snap.name,
     type: snap.type,
@@ -44,7 +43,6 @@ async function restoreLastDeletedChannel(guild) {
 
   if (!created) return;
 
-  // remove one snapshot (optional)
   setGuildState(guild.id, (st) => {
     st.snapshots.channels = (st.snapshots.channels || []).filter(s => s !== snap);
   });

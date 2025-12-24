@@ -9,7 +9,6 @@ function isOwner(client, userId) {
 }
 
 function setupCommandHandler(client) {
-  // load commands
   const dir = path.join(__dirname, "..", "commands");
   const files = fs.readdirSync(dir).filter(f => f.endsWith(".js"));
   for (const f of files) {
@@ -17,7 +16,6 @@ function setupCommandHandler(client) {
     client.security.commands.set(cmd.name, cmd);
   }
 
-  // ✅ carica alias UNA VOLTA
   const aliases = loadAliases();
 
   client.on("messageCreate", async (message) => {
@@ -36,7 +34,6 @@ function setupCommandHandler(client) {
 
     let name = (rawName || "").toLowerCase();
 
-    // ✅ risolvi alias
     name = resolveAlias(name, aliases);
 
     const cmd = client.security.commands.get(name);

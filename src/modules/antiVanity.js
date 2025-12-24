@@ -7,7 +7,6 @@ function registerAntiVanity(client) {
     const cfg = client.security.config;
     if (!cfg.modules?.antiVanity?.enabled) return;
 
-    // vanityURLCode requires partner/boost level; if null, ignore
     if ((oldG.vanityURLCode || "") === (newG.vanityURLCode || "")) return;
 
     const entry = await findAuditExecutor(newG, AuditLogEvent.GuildUpdate, cfg);
@@ -26,7 +25,6 @@ function registerAntiVanity(client) {
       targetUser: null,
       reason: entry.reason || cfg.punishments?.default?.reason,
       details: `vanity: ${oldG.vanityURLCode || "none"} -> ${newG.vanityURLCode || "none"}`
-      // restore vanity non è possibile via bot se non hai API/permessi specifici; logghiamo e basta.
     });
   });
 }

@@ -14,7 +14,6 @@ function registerAntiBot(client) {
     const executorUser = entry.executor;
     const executorMember = await member.guild.members.fetch(executorUser.id).catch(() => null);
 
-    // prima sanziona executor, poi kick bot, poi log (restoreFn usato come "post-action")
     await handleSecurityEvent({
       client,
       guild: member.guild,

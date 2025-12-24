@@ -19,7 +19,6 @@ function registerAntiChannels(client) {
     const executorUser = entry.executor;
     const executorMember = await channel.guild.members.fetch(executorUser.id).catch(() => null);
 
-    // snapshot for possible restore? (optional)
     if (cfg.restore?.enabled) await snapshotChannel(channel.guild, channel).catch(() => null);
 
     await handleSecurityEvent({
@@ -33,7 +32,6 @@ function registerAntiChannels(client) {
       reason: entry.reason || cfg.punishments?.default?.reason,
       details: `channel=${channel.id} (${channel.name})`,
       restoreFn: cfg.modules.antiChannelCreate.restore ? async () => {
-        // For create, restore means "delete the created channel"
         await channel.delete("Security: revert unauthorized channel create").catch(() => null);
       } : null
     });
@@ -44,7 +42,6 @@ function registerAntiChannels(client) {
     if (!cfg.modules?.antiChannelDelete?.enabled) return;
     if (!channel.guild) return;
 
-    // snapshot deleted channel before it disappears (we still have the object)
     if (cfg.restore?.enabled && cfg.modules.antiChannelDelete.restore) {
       await snapshotChannel(channel.guild, channel).catch(() => null);
     }

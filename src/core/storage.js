@@ -41,7 +41,6 @@ function readState() {
   try {
     return JSON.parse(raw);
   } catch (err) {
-    // backup file corrotto
     const backup = `${STATE_PATH}.corrupted.${Date.now()}`;
     fs.writeFileSync(backup, raw);
     writeSafe(DEFAULT_STATE);

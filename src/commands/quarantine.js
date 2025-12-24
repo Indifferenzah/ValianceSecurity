@@ -11,7 +11,6 @@ module.exports = {
     const usage = msgs.commands?.quarantine?.usage?.replace("{prefix}", cfg.prefix) || "usage";
     if (!args[0]) return message.reply({ content: usage }).catch(() => null);
 
-    // target: mention OR id
     const mention = message.mentions.members.first();
     const targetId = mention?.id || args[0].replace(/[<@!>]/g, "").trim();
 
@@ -22,7 +21,6 @@ module.exports = {
       return message.reply({ content: msgs.commands?.quarantine?.notFound || "not found" }).catch(() => null);
     }
 
-    // ensure role exists
     const qRole = await ensureQuarantineRoleForGuild(message.guild, client);
     if (!qRole) {
       const fail = (msgs.commands?.quarantine?.fail || "fail")
@@ -30,7 +28,6 @@ module.exports = {
       return message.reply({ content: fail }).catch(() => null);
     }
 
-    // apply quarantine
     const res = await applyQuarantineToMember({
       guild: message.guild,
       client,

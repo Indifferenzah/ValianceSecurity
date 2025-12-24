@@ -4,12 +4,10 @@ async function ensureQuarantineRoleForGuild(guild, client) {
   const cfg = client.security.config;
   if (!cfg.quarantine?.enabled) return null;
 
-  // resolve by ID or by name
   let role =
     (cfg.quarantine.roleId && guild.roles.cache.get(cfg.quarantine.roleId)) ||
     guild.roles.cache.find(r => r.name === cfg.quarantine.roleName);
 
-  // create if missing
   if (!role && cfg.quarantine.createIfMissing) {
     role = await guild.roles.create({
       name: cfg.quarantine.roleName,
@@ -30,17 +28,15 @@ async function applyQuarantineToMember({ guild, client, member, reason }) {
   const qRole = await ensureQuarantineRoleForGuild(guild, client);
   if (!qRole) return "FAIL";
 
-  // 🔒 salva i ruoli ORIGINALI (una sola volta)
   setGuildState(guild.id, (gs) => {
     gs.quarantineRoles ??= {};
     if (!gs.quarantineRoles[member.id]) {
       gs.quarantineRoles[member.id] = member.roles.cache
-        .filter(r => r.id !== guild.id) // esclude @everyone
+        .filter(r => r.id !== guild.id)
         .map(r => r.id);
     }
   });
 
-  // rimuovi ruoli se richiesto
   if (cfg.quarantine.removeAllRoles) {
     const keep = new Set([qRole.id, guild.id]);
     const toRemove = member.roles.cache.filter(r => !keep.has(r.id));
@@ -69,13 +65,11 @@ async function removeQuarantineFromMember({ guild, client, member, reason }) {
 
   if (!member.roles.cache.has(qRole.id)) return "OK";
 
-  // rimuovi quarantine
   await member.roles.remove(qRole, reason || "Unquarantine").catch(() => null);
 
   const gs = getGuildState(guild.id);
   const saved = gs.quarantineRoles?.[member.id] || [];
 
-  // 🔁 ripristina i ruoli salvati
   for (const roleId of saved) {
     const role = guild.roles.cache.get(roleId);
     if (!role) continue;
@@ -85,7 +79,6 @@ async function removeQuarantineFromMember({ guild, client, member, reason }) {
       .catch(() => null);
   }
 
-  // 🧹 cleanup
   setGuildState(guild.id, (gs) => {
     if (gs.quarantineRoles) {
       delete gs.quarantineRoles[member.id];

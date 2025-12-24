@@ -41,7 +41,7 @@ async function snapshotGuild(guild) {
   setGuildState(guild.id, gs => {
     gs.snapshots = gs.snapshots || [];
     gs.snapshots.unshift(snapshot);
-    gs.snapshots = gs.snapshots.slice(0, 5); // max 5 snapshot completi
+    gs.snapshots = gs.snapshots.slice(0, 5);
   });
 
   return snapshot;

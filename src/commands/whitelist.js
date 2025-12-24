@@ -18,8 +18,8 @@ module.exports = {
       }).catch(() => null);
     }
 
-    const act = sub; // add/remove
-    const type = (args[1] || "").toLowerCase(); // user/role
+    const act = sub;
+    const type = (args[1] || "").toLowerCase();
     const id = (args[2] || "").trim();
 
     if (!["add", "remove"].includes(act) || !["user", "role"].includes(type) || !id) {

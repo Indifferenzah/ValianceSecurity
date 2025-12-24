@@ -29,7 +29,7 @@ async function applyQuarantineToChannel(channel, client) {
   if (!cfg.quarantine?.enabled) return;
 
   const deny = buildDenyPermissions(cfg);
-  if (!deny) return; // <-- QUI era il problema
+  if (!deny) return;
 
   const role = await ensureQuarantineRoleForGuild(channel.guild, client);
   if (!role) return;

@@ -12,7 +12,7 @@ async function findAuditExecutor(guild, actionType, cfg) {
   const entry = fetched.entries.find(e => (now - e.createdTimestamp) <= maxAge);
   if (!entry) return null;
 
-  return entry; // has executor, target, changes, reason
+  return entry;
 }
 
 module.exports = { findAuditExecutor };

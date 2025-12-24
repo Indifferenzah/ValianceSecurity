@@ -1,6 +1,6 @@
 const { handleSecurityEvent } = require("../core/sanction");
 
-const mentionCache = new Map(); // messageId -> { guildId, authorId, mentionedIds[], ts }
+const mentionCache = new Map();
 
 function registerAntiGhostPing(client) {
   client.on("messageCreate", async (message) => {
