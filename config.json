@@ -65,10 +65,14 @@
   "lockdown": {
     "enabled": true,
     "applyOnNuke": true,
-    "channels": {
-      "denySendMessages": true,
-      "denyConnect": true
-    }
+    "member_role": "1350073971395268698",
+    "lockdown_channels": [
+      "1350074011131969600",
+      "1350074026520875070",
+      "1350074044250329179",
+      "1440825155961094176"
+    ],
+    "permission": "SendMessages"
   },
 
   "restore": {
