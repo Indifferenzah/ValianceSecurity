@@ -19,7 +19,6 @@ function registerModules(client) {
   registerAntiBot(client);
   registerAntiEveryone(client);
   registerAntiStickers(client);
-  registerAntiGhostPing(client);
 }
 
 module.exports = { registerModules };

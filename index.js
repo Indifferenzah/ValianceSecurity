@@ -26,41 +26,6 @@ const client = new Client({
   partials: [Partials.Channel, Partials.Message, Partials.GuildMember]
 });
 
-async function updatePresence(client) {
-  const cfg = client.security.config;
-  const p = cfg.presence;
-  if (!p) return;
-
-  let membersCount = null;
-
-  if (p.memberCountGuild) {
-    const guild = client.guilds.cache.get(p.memberCountGuild);
-    if (guild) {
-      try {
-        await guild.members.fetch({ withPresences: false });
-        membersCount = guild.memberCount;
-      } catch {
-        membersCount = guild.memberCount;
-      }
-    }
-  }
-
-  let text = p.activity?.text || "";
-  if (membersCount !== null) {
-    text = text.replace("{members}", membersCount.toLocaleString());
-  }
-
-  client.user.setPresence({
-    status: p.status || "online",
-    activities: p.activity
-      ? [{
-          name: text,
-          type: p.activity.type || "PLAYING"
-        }]
-      : []
-  });
-}
-
 client.security = {
   get config() { return config; },
   get messages() { return messages; },
