@@ -53,12 +53,12 @@
     "roleId": "1453168615535935518",
     "createIfMissing": true,
     "removeAllRoles": true,
-    "setPermissions": {
-      "viewChannel": false,
-      "sendMessages": false,
-      "addReactions": false,
-      "connect": false,
-      "speak": false
+    "denyPermissions": {
+      "ViewChannel": false,
+      "SendMessages": false,
+      "AddReactions": false,
+      "Connect": false,
+      "Speak": false
     }
   },
 

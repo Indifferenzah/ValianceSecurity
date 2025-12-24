@@ -46,25 +46,42 @@ async function applyQuarantineToMember({ guild, client, member, reason }) {
 async function removeQuarantineFromMember({ guild, client, member, reason }) {
   const cfg = client.security.config;
 
+  // ruolo quarantine
   const qRole =
     (cfg.quarantine.roleId && guild.roles.cache.get(cfg.quarantine.roleId)) ||
     guild.roles.cache.find(r => r.name === cfg.quarantine.roleName);
 
   if (!qRole) return "FAIL";
 
+  // ruolo member da config lockdown
+  const memberRoleId = cfg.lockdown?.member_role;
+  const memberRole = memberRoleId
+    ? guild.roles.cache.get(memberRoleId)
+    : null;
+
   const me = await guild.members.fetchMe().catch(() => null);
   if (!me || member.roles.highest.position >= me.roles.highest.position) {
     return "HIERARCHY";
   }
 
+  // se non è in quarantine, non fare nulla
   if (!member.roles.cache.has(qRole.id)) {
-    return "OK"; // già non in quarantine
+    return "OK";
   }
 
+  // rimuovi quarantine
   await member.roles.remove(
     qRole,
     reason || "Manual unquarantine"
   ).catch(() => null);
+
+  // aggiungi member_role se esiste e non è già presente
+  if (memberRole && !member.roles.cache.has(memberRole.id)) {
+    await member.roles.add(
+      memberRole,
+      reason || "Restore member role after quarantine"
+    ).catch(() => null);
+  }
 
   return "OK";
 }
