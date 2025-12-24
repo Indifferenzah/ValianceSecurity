@@ -127,5 +127,14 @@
       "disableModules": true
     },
     "logReason": "PANIC MODE: mass destructive actions detected"
+  },
+  "presence": {
+    "status": "dnd",
+    "activity": {
+      "type": "WATCHING",
+      "text": "vs!help | {members} membri"
+    },
+    "memberCountGuild": "1350073876339490826",
+    "updateInterval": 300000
   }
 }
