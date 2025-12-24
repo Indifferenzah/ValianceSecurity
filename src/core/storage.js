@@ -59,6 +59,7 @@ function getGuildState(guildId) {
   if (!state.guilds[guildId]) {
     state.guilds[guildId] = {
       whitelist: { users: [], roles: [], channels: [] },
+      quarantineRoles: {},
       quarantine: { enabled: true },
       lockdown: { enabled: false },
       ratelimit: {},
@@ -71,11 +72,13 @@ function getGuildState(guildId) {
   return state.guilds[guildId];
 }
 
+
 function setGuildState(guildId, updater) {
   const state = readState();
 
   state.guilds[guildId] ??= {
     whitelist: { users: [], roles: [], channels: [] },
+    quarantineRoles: {},
     quarantine: { enabled: true },
     lockdown: { enabled: false },
     ratelimit: {},
