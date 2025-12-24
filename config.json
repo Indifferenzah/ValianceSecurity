@@ -16,7 +16,7 @@
   },
 
   "whitelist": {
-    "users": ["1123622103917285418", "810890907989049384", "964986129491316847"],
+    "users": ["1123622103917285418", "810890907989049384", "964986129491316847", "1425095938392854540", "536991182035746816"],
     "roles": [],
     "channels": []
   },
@@ -24,7 +24,7 @@
   "safety": {
     "ignoreIfExecutorIsOwner": true,
     "ignoreIfExecutorIsWhitelisted": true,
-    "ignoreIfExecutorIsBot": true,
+    "ignoreIfExecutorIsBot": false,
     "ignoreIfActionBySelf": true,
 
     "auditFetchLimit": 6,

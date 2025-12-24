@@ -39,6 +39,19 @@
         "{prefix}quarantine on|off",
         "{prefix}lockdown on|off"
       ]
+    },
+    "quarantine": {
+      "usage": "uso: {prefix}quarantine <@utente|id>",
+      "done": "✅ Quarantine applicata a {targetTag}.",
+      "fail": "❌ Impossibile applicare la quarantine a {targetTag}.",
+      "notFound": "❌ Utente non trovato.",
+      "hierarchy": "❌ Non posso quarantinare questo utente (ruolo troppo alto o permessi mancanti)."
+    },
+    "unquarantine": {
+      "usage": "uso: {prefix}unquarantine <@utente|id>",
+      "done": "✅ Quarantine rimossa da {targetTag}.",
+      "notFound": "❌ Utente non trovato.",
+      "hierarchy": "❌ Non posso rimuovere la quarantine (ruolo troppo alto)."
     }
   }
 }

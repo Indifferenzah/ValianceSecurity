@@ -1,0 +1,22 @@
+{
+  "guilds": {
+    "1350073876339490826": {
+      "whitelist": {
+        "users": [
+          "1425095938392854540"
+        ],
+        "roles": [],
+        "channels": []
+      },
+      "quarantine": {
+        "enabled": true
+      },
+      "lockdown": {
+        "enabled": false
+      },
+      "ratelimit": {},
+      "panic": {},
+      "snapshots": []
+    }
+  }
+}

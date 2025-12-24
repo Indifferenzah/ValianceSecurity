@@ -2,9 +2,17 @@ const { AuditLogEvent, ChannelType } = require("discord.js");
 const { findAuditExecutor } = require("../core/audit");
 const { handleSecurityEvent } = require("../core/sanction");
 const { snapshotChannel, restoreLastDeletedChannel } = require("../core/restore");
+const { applyQuarantineToChannel } = require("../core/quarantineChannels");
 
+client.on("channelCreate", async (channel) => {
+  if (!channel.guild) return;
+  await applyQuarantineToChannel(channel, client);
+});
 function registerAntiChannels(client) {
   client.on("channelCreate", async (channel) => {
+    if (!channel.guild) return;
+    await applyQuarantineToChannel(channel, client);
+      
     const cfg = client.security.config;
     if (!cfg.modules?.antiChannelCreate?.enabled) return;
     if (!channel.guild) return;

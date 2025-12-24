@@ -1,7 +1,6 @@
 const { Client, GatewayIntentBits, Partials, Collection } = require("discord.js");
 const { loadConfig } = require("./src/core/config");
 const { loadMessages } = require("./src/core/messages");
-const { ensureStateFile } = require("./src/core/storage");
 const { registerModules } = require("./src/core/permissions");
 const { setupCommandHandler } = require("./src/core/respond");
 const { logInfo } = require("./src/core/log");
@@ -9,7 +8,6 @@ const { logInfo } = require("./src/core/log");
 let config = loadConfig();
 let messages = loadMessages();
 
-ensureStateFile();
 
 function buildIntents(cfg) {
   const intents = [];
