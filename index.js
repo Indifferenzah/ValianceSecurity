@@ -74,6 +74,18 @@ async function updatePresence(client) {
   });
 }
 
+client.on("guildMemberAdd", async (member) => {
+  if (member.guild.id === client.security.config.presence.memberCountGuild) {
+    await updatePresence(client);
+  }
+});
+
+client.on("guildMemberRemove", async (member) => {
+  if (member.guild.id === client.security.config.presence.memberCountGuild) {
+    await updatePresence(client);
+  }
+});
+
 client.once("ready", async () => {
   const readyMsg = messages.bot.ready
     .replace("{userTag}", client.user.tag)
