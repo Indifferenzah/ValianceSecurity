@@ -8,6 +8,7 @@ const { registerAntiBot } = require("../modules/antiBot");
 const { registerAntiEveryone } = require("../modules/antiEveryone");
 const { registerAntiStickers } = require("../modules/antiStickers");
 const { registerAntiGhostPing } = require("../modules/antiGhostPing");
+const { registerAntiFlood } = require("../modules/antiFlood");
 
 function registerModules(client) {
   registerAntiBan(client);
@@ -19,6 +20,7 @@ function registerModules(client) {
   registerAntiBot(client);
   registerAntiEveryone(client);
   registerAntiStickers(client);
+  registerAntiFlood(client);
 }
 
 module.exports = { registerModules };

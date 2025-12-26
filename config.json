@@ -110,8 +110,8 @@
     "antiSticker": { "enabled": true, "punishment": "default" },
 
     "antiGhostPing": {
-      "enabled": true,
-      "punishment": "default",
+      "enabled": false,
+      "punishment": "none",
       "windowMs": 15000,
       "minMentions": 1
     }
@@ -136,5 +136,17 @@
     },
     "memberCountGuild": "1350073876339490826",
     "updateInterval": 300000
+  },
+  "antiFlood": {
+    "enabled": true,
+
+    "windowMs": 10000,
+    "maxMessages": 5,
+
+    "checkDuplicates": true,
+    "duplicateWindowMs": 15000,
+
+    "deleteMessages": true,
+    "punishment": "timeout"
   }
 }

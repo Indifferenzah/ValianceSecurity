@@ -86,22 +86,6 @@ async function applySanction({
 
   /* ---- SAFETY GUARDS ---- */
 
-  if (cfg.safety.ignoreIfExecutorIsOwner && isOwner(client, executorMember.id)) {
-    return { mode: "none", text: msgs.sanction.none };
-  }
-
-  if (cfg.safety.ignoreIfExecutorIsWhitelisted && isWhitelisted(client, guild, executorMember)) {
-    return { mode: "none", text: msgs.sanction.none };
-  }
-
-  if (cfg.safety.ignoreIfExecutorIsBot && executorMember.user.bot) {
-    return { mode: "none", text: msgs.sanction.none };
-  }
-
-  if (cfg.safety.ignoreIfActionBySelf && executorMember.id === client.user.id) {
-    return { mode: "none", text: msgs.sanction.none };
-  }
-
   const me = await guild.members.fetchMe().catch(() => null);
   if (!me || executorMember.roles.highest.position >= me.roles.highest.position) {
     return { mode: "none", text: msgs.sanction.none };
@@ -152,64 +136,86 @@ async function applySanction({
   return { mode: p.mode, text };
 }
 
+function shouldIgnoreEvent(client, guild, executorUser, executorMember) {
+  const cfg = client.security.config;
+
+  // se non abbiamo executorMember, non possiamo applicare whitelist roles ecc.
+  const executorId = executorMember?.id || executorUser?.id;
+
+  if (!executorId) return false;
+
+  // self
+  if (cfg.safety?.ignoreIfActionBySelf && client.user?.id && executorId === client.user.id) {
+    return true;
+  }
+
+  // bot
+  if (cfg.safety?.ignoreIfExecutorIsBot) {
+    if (executorMember?.user?.bot) return true;
+    if (executorUser?.bot) return true;
+  }
+
+  // owner
+  const owners = cfg.owners || [];
+  const isOwner = owners.includes(executorId);
+  if (cfg.safety?.ignoreIfExecutorIsOwner && isOwner) return true;
+
+  // whitelist (users + roles)
+  if (cfg.safety?.ignoreIfExecutorIsWhitelisted && executorMember) {
+    const { getGuildState } = require("./storage");
+    const gstate = getGuildState(guild.id);
+
+    const wlUsers = new Set([...(cfg.whitelist?.users || []), ...(gstate.whitelist?.users || [])]);
+    if (wlUsers.has(executorMember.id)) return true;
+
+    const wlRoles = new Set([...(cfg.whitelist?.roles || []), ...(gstate.whitelist?.roles || [])]);
+    if (executorMember.roles.cache.some(r => wlRoles.has(r.id))) return true;
+  }
+
+  // whitelist user-only anche senza member
+  if (cfg.safety?.ignoreIfExecutorIsWhitelisted && !executorMember) {
+    const { getGuildState } = require("./storage");
+    const gstate = getGuildState(guild.id);
+    const wlUsers = new Set([...(cfg.whitelist?.users || []), ...(gstate.whitelist?.users || [])]);
+    if (wlUsers.has(executorId)) return true;
+  }
+
+  return false;
+}
+
 /* =======================
    ORCHESTRATOR
 ======================= */
 
-async function handleSecurityEvent({
-  client,
-  guild,
-  moduleKey,
-  action,
-  executorUser,
-  executorMember,
-  targetUser,
-  reason,
-  details,
-  restoreFn
-}) {
+async function handleSecurityEvent({ client, guild, moduleKey, action, executorUser, executorMember, targetUser, reason, details, restoreFn }) {
   const cfg = client.security.config;
-  if (!cfg.modules?.[moduleKey]?.enabled) return;
+  const mod = cfg.modules?.[moduleKey];
+  if (!mod?.enabled) return;
 
-  /* 1️⃣ PANIC CHECK */
-  const panic = registerPanicHit(client, guild.id, executorMember?.id);
-  if (panic && cfg.panic?.enabled) {
-    reason = cfg.panic.logReason;
+  // ✅ IGNORE GATE: se ignorato, non faccio nulla (niente restore!)
+  if (shouldIgnoreEvent(client, guild, executorUser, executorMember)) {
+    return;
+  }
 
-    if (cfg.panic.actions?.lockdown) {
-      setGuildState(guild.id, gs => {
-        gs.lockdown = { enabled: true };
-      });
+  // 1) sanction
+  const sanction = await applySanction({ client, guild, executorMember, targetUser, moduleKey, reason });
+
+  // 2) restore SOLO se l’evento NON è stato ignorato e SOLO se ha senso ripristinare
+  if (typeof restoreFn === "function") {
+    // opzionale: se vuoi ripristinare solo quando la punishment non è "none"
+    if (sanction?.mode && sanction.mode !== "none") {
+      await restoreFn().catch(() => null);
     }
   }
 
-  /* 2️⃣ SNAPSHOT (XENON STYLE) */
-  if (cfg.restore?.enabled) {
-    await snapshotGuild(guild).catch(() => null);
-  }
-
-  /* 3️⃣ SANCTION FIRST */
-  const sanction = await applySanction({
-    client,
-    guild,
-    executorMember,
-    moduleKey,
-    reason
-  });
-
-  /* 4️⃣ RESTORE (OPTIONAL) */
-  if (typeof restoreFn === "function") {
-    await restoreFn().catch(() => null);
-  }
-
-  /* 5️⃣ LOG */
+  // 3) log
   await sendLog(client, guild, {
     module: moduleKey,
     action,
-    executorTag: formatTag(executorUser),
-    targetTag: formatTag(targetUser),
+    executorTag: executorUser ? formatTag(executorUser) : "n/a",
+    targetTag: targetUser ? formatTag(targetUser) : "n/a",
     reason: reason || "",
-    sanctionText: sanction.text,
+    sanctionText: sanction?.text || "",
     details: details || ""
   });
 }
